@@ -11,6 +11,9 @@ class PatientDetails {
   String? id;
   bool? attended;
 
+  String doctorName;
+  String doctorLocation;
+
   PatientDetails(
       {required this.name,
       required this.location,
@@ -20,6 +23,8 @@ class PatientDetails {
       required this.highPriority,
       required this.language,
       required this.existingCondition,
+      this.doctorName = "",
+      this.doctorLocation = "",
       this.id,
       this.attended});
 
@@ -34,6 +39,8 @@ class PatientDetails {
         language: json['language'],
         existingCondition: json['existingCondition'],
         attended: json['attended'],
+        doctorName: json['doctor'] ?? "",
+        doctorLocation: json['doctorLocation'] ?? "",
         id: json['_id']);
   }
 

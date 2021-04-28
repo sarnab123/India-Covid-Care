@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:india_covid_care/doctor_flow/bloc/doctor_bloc.dart';
+import 'package:india_covid_care/doctor_flow/model/doctor_information.dart';
+import 'package:india_covid_care/doctor_flow/view/doctor_information_dialog.dart';
+import 'package:india_covid_care/doctor_flow/view/doctor_information_textField.dart';
 import 'package:india_covid_care/network/patient_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,6 +44,21 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
           SizedBox(
             height: 16,
           ),
+          if (_assignedDoctor())
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Text('Last Doctor Spoken with:'),
+                    Spacer(),
+                    Column(
+                      children: [
+                        Text('Name: ${widget.patient.doctorName}'),
+                        Text('Location: ${widget.patient.doctorLocation}')
+                      ],
+                    )
+                  ],
+                )),
           Row(
             children: [
               ElevatedButton(
@@ -65,8 +83,17 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
               Spacer(),
               ElevatedButton(
                   onPressed: () {
+                    // Present the Dialog here
+                    showDialog(
+                        context: context,
+                        builder: (ctx) => BlocProvider.value(
+                            value: BlocProvider.of<DoctorBloc>(context),
+                            child: DoctorInformationDialog(
+                              phoneNumber: widget.patient.number ?? "",
+                              id: widget.patient.id ?? "",
+                            )));
                     // create phone call here
-                    launch("whatsapp://send?phone=+91${widget.patient.number}");
+                    // launch("whatsapp://send?phone=+91${widget.patient.number}");
                   },
                   style: ElevatedButton.styleFrom(
                       primary: Colors.green, padding: EdgeInsets.all(12)),
@@ -116,5 +143,10 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
 
   bool _isHighPriority() {
     return widget.patient.highPriority != null && widget.patient.highPriority!;
+  }
+
+  bool _assignedDoctor() {
+    return widget.patient.doctorName.isNotEmpty &&
+        widget.patient.doctorLocation.isNotEmpty;
   }
 }

@@ -23,6 +23,22 @@ class DoctorRepository {
     }
   }
 
+  postDoctorCall(String name, String location, String id) {
+    try {
+      apiClient.post(CovidCareEndpoints.markAsComplete, {
+        'doctor': name,
+        'doctorLocation': location
+      }, {
+        'id': id
+      }).then((value) => {
+            print(
+                'Here is POST DOCTOR CALL RESPONSE: ${value.statusCode} ${value.body}')
+          });
+    } catch (error) {
+      print("Error updating Doctor Information on Call : $error");
+    }
+  }
+
   Future<void> markAsCompleted(String id) async {
     try {
       final response = await apiClient
