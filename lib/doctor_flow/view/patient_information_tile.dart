@@ -44,70 +44,84 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
           SizedBox(
             height: 16,
           ),
-          if (_assignedDoctor())
-            Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Text('Last Doctor Spoken with:'),
-                    Spacer(),
+          Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  if (_isVaccinated())
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text('Vaccinated'),
+                        if (widget.patient.vaccine1Date != null)
+                          Text('1st Dose: ${widget.patient.vaccine1Date!}'),
+                        if (widget.patient.vaccine2Date != null)
+                          Text('2nd Dose: ${widget.patient.vaccine2Date!}')
+                      ],
+                    ),
+                  if (!_isVaccinated()) Text('Not Vaccinated'),
+                  Spacer(),
+                  if (_assignedDoctor())
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Last Connected Doctor'),
                         Text('Name: ${widget.patient.doctorName}'),
                         Text('Location: ${widget.patient.doctorLocation}')
                       ],
                     )
-                  ],
-                )),
-          Row(
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    // queue BLoC event
-                    if (widget.patient.id != null) {
-                      BlocProvider.of<DoctorBloc>(context)
-                          .add(MarkPatientAsCompleted(id: widget.patient.id!));
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.green, padding: EdgeInsets.all(12)),
-                  child: Row(
-                    children: [
-                      Text('Mark as completed'),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Icon(Icons.check)
-                    ],
-                  )),
-              Spacer(),
-              ElevatedButton(
-                  onPressed: () {
-                    // Present the Dialog here
-                    showDialog(
-                        context: context,
-                        builder: (ctx) => BlocProvider.value(
-                            value: BlocProvider.of<DoctorBloc>(context),
-                            child: DoctorInformationDialog(
-                              phoneNumber: widget.patient.number ?? "",
-                              id: widget.patient.id ?? "",
-                            )));
-                    // create phone call here
-                    // launch("whatsapp://send?phone=+91${widget.patient.number}");
-                  },
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.green, padding: EdgeInsets.all(12)),
-                  child: Row(
-                    children: [
-                      Text('Call'),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Icon(Icons.phone)
-                    ],
-                  ))
-            ],
-          ),
+                ],
+              )),
+          if (_isVaccinated())
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      // queue BLoC event
+                      if (widget.patient.id != null) {
+                        BlocProvider.of<DoctorBloc>(context).add(
+                            MarkPatientAsCompleted(id: widget.patient.id!));
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.green, padding: EdgeInsets.all(12)),
+                    child: Row(
+                      children: [
+                        Text('Mark as completed'),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Icon(Icons.check)
+                      ],
+                    )),
+                Spacer(),
+                ElevatedButton(
+                    onPressed: () {
+                      // Present the Dialog here
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => BlocProvider.value(
+                              value: BlocProvider.of<DoctorBloc>(context),
+                              child: DoctorInformationDialog(
+                                phoneNumber: widget.patient.number ?? "",
+                                id: widget.patient.id ?? "",
+                              )));
+                      // create phone call here
+                      // launch("whatsapp://send?phone=+91${widget.patient.number}");
+                    },
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.green, padding: EdgeInsets.all(12)),
+                    child: Row(
+                      children: [
+                        Text('Call'),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Icon(Icons.phone)
+                      ],
+                    ))
+              ],
+            ),
         ],
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
       )
@@ -115,25 +129,29 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
   }
 
   Widget _buildColumnWrap(bool isSymptom) {
+    final List<String> split = _splitSymptomsConditionsToList(
+        isSymptom ? widget.patient.symptoms : widget.patient.existingCondition);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: Text(isSymptom ? 'Symptoms' : 'Conditions')),
-      Wrap(
-        spacing: 8.0,
-        runSpacing: 4.0,
-        direction: Axis.horizontal,
-        children: [
-          for (String obj in _splitSymptomsConditionsToList(isSymptom
-              ? widget.patient.symptoms
-              : widget.patient.existingCondition))
-            Chip(
-                label: Padding(
-              padding: EdgeInsets.all(6),
-              child: Text(obj),
-            ))
-        ],
-      )
+      if (split.isEmpty) Text('No Conditions Reported!'),
+      if (split.isNotEmpty)
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          direction: Axis.horizontal,
+          children: [
+            for (String obj in _splitSymptomsConditionsToList(isSymptom
+                ? widget.patient.symptoms
+                : widget.patient.existingCondition))
+              Chip(
+                  label: Padding(
+                padding: EdgeInsets.all(6),
+                child: Text(obj),
+              ))
+          ],
+        )
     ]);
   }
 
@@ -148,5 +166,9 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
   bool _assignedDoctor() {
     return widget.patient.doctorName.isNotEmpty &&
         widget.patient.doctorLocation.isNotEmpty;
+  }
+
+  bool _isVaccinated() {
+    return widget.patient.vaccineTaken != null && widget.patient.vaccineTaken!;
   }
 }

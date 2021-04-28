@@ -13,6 +13,9 @@ class PatientDetails {
 
   String doctorName;
   String doctorLocation;
+  final bool? vaccineTaken;
+  final String? vaccine1Date;
+  final String? vaccine2Date;
 
   PatientDetails(
       {required this.name,
@@ -26,6 +29,9 @@ class PatientDetails {
       this.doctorName = "",
       this.doctorLocation = "",
       this.id,
+      this.vaccine1Date,
+      this.vaccineTaken,
+      this.vaccine2Date,
       this.attended});
 
   factory PatientDetails.fromJson(Map<String, dynamic> json) {
@@ -41,6 +47,9 @@ class PatientDetails {
         attended: json['attended'],
         doctorName: json['doctor'] ?? "",
         doctorLocation: json['doctorLocation'] ?? "",
+        vaccineTaken: json['vaccineTaken'],
+        vaccine1Date: json['vaccine1Date'],
+        vaccine2Date: json['vaccine2Date'],
         id: json['_id']);
   }
 
