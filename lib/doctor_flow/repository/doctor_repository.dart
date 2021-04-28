@@ -41,8 +41,8 @@ class DoctorRepository {
 
   Future<void> markAsCompleted(String id) async {
     try {
-      final response = await apiClient
-          .post(CovidCareEndpoints.markAsComplete, {}, {'id': id});
+      final response = await apiClient.post(
+          CovidCareEndpoints.markAsComplete, {'attended': 'true'}, {'id': id});
       if (response.statusCode != 200) {
         throw HttpException(
             'Invalid MarkAsCompleted, statusCode not 200. ${response.statusCode}');
