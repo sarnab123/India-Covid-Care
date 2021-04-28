@@ -31,3 +31,16 @@ class PatientInformationFieldUpdated extends PatientEvent {
 }
 
 class PatientInformationSubmitted extends PatientEvent {}
+
+class VaccineToggled extends PatientEvent {
+  final bool value;
+
+  VaccineToggled({required this.value});
+}
+
+class VaccineDateSelected extends PatientEvent {
+  final DateTime newDate;
+  final bool isFirstShot;
+
+  VaccineDateSelected({required this.newDate, required this.isFirstShot});
+}

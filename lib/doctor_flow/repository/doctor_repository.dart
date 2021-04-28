@@ -23,10 +23,26 @@ class DoctorRepository {
     }
   }
 
+  Future<void> postDoctorCall(
+      String name, String location, String id, String number) async {
+    try {
+      final resp = await apiClient.post(CovidCareEndpoints.markAsComplete,
+          {'doctor': name, 'doctorLocation': location}, {'id': id});
+      if (resp.statusCode != 200) {
+        return Future.error(
+            'Invalid status code updating DocInfo: ${resp.statusCode}');
+      }
+      return Future.value();
+    } catch (error) {
+      print("Error updating Doctor Information on Call : $error");
+      return Future.error('Error updating Doctor Information pre call: $error');
+    }
+  }
+
   Future<void> markAsCompleted(String id) async {
     try {
-      final response = await apiClient
-          .post(CovidCareEndpoints.markAsComplete, {}, {'id': id});
+      final response = await apiClient.post(
+          CovidCareEndpoints.markAsComplete, {'attended': 'true'}, {'id': id});
       if (response.statusCode != 200) {
         throw HttpException(
             'Invalid MarkAsCompleted, statusCode not 200. ${response.statusCode}');

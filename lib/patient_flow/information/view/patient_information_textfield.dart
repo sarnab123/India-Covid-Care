@@ -70,7 +70,7 @@ class _PatientInformationTextFieldState
       case PatientInformationFields.age:
         return TextInputType.number;
       case PatientInformationFields.number:
-        return TextInputType.phone;
+        return TextInputType.number;
       case PatientInformationFields.language:
       case PatientInformationFields.location:
       case PatientInformationFields.name:

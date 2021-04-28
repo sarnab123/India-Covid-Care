@@ -15,6 +15,7 @@ class PatientEditing extends PatientState {
   final FormzStatus status;
   final Age age;
   final PhoneNumber number;
+  final bool vaccinated;
 
   bool apiSuccess = false;
   bool apiError = false;
@@ -27,6 +28,7 @@ class PatientEditing extends PatientState {
       this.age = const Age.pure(),
       this.apiSuccess = false,
       this.apiError = false,
+      this.vaccinated = false,
       this.status = FormzStatus.invalid});
 
   PatientEditing copyWith(
@@ -36,6 +38,7 @@ class PatientEditing extends PatientState {
       Age? newAge,
       bool? apiSuccess,
       bool? apiError,
+      bool? newVaccine,
       FormzStatus? newStatus,
       PhoneNumber? newPhone}) {
     return PatientEditing(
@@ -45,11 +48,21 @@ class PatientEditing extends PatientState {
         number: newPhone ?? this.number,
         status: newStatus ?? this.status,
         apiSuccess: apiSuccess ?? false,
+        vaccinated: newVaccine ?? this.vaccinated,
         apiError: apiError ?? false,
         language: newLang ?? this.language);
   }
 
   @override
-  List<Object> get props =>
-      [name, language, location, status, age, number, apiError, apiSuccess];
+  List<Object> get props => [
+        name,
+        language,
+        location,
+        status,
+        age,
+        number,
+        apiError,
+        apiSuccess,
+        vaccinated
+      ];
 }

@@ -13,6 +13,15 @@ class DoctorLoading extends DoctorState {}
 
 class PatientsLoaded extends DoctorState {
   final List<PatientDetails> patients;
+  bool isValidDoctorInput;
 
-  PatientsLoaded({required this.patients});
+  PatientsLoaded({required this.patients, this.isValidDoctorInput = false});
+
+  PatientsLoaded copyWith({required bool validInput}) {
+    return PatientsLoaded(
+        patients: this.patients, isValidDoctorInput: validInput);
+  }
+
+  @override
+  List<Object> get props => [isValidDoctorInput];
 }
