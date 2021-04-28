@@ -23,6 +23,7 @@ class DoctorInformationUpdated extends DoctorEvent {
 
 class DoctorInitiatedCall extends DoctorEvent {
   final String id;
+  final String number;
 
-  DoctorInitiatedCall({required this.id});
+  DoctorInitiatedCall({required this.id, required this.number});
 }

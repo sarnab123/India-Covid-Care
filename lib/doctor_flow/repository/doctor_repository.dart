@@ -23,19 +23,19 @@ class DoctorRepository {
     }
   }
 
-  postDoctorCall(String name, String location, String id) {
+  Future<void> postDoctorCall(
+      String name, String location, String id, String number) async {
     try {
-      apiClient.post(CovidCareEndpoints.markAsComplete, {
-        'doctor': name,
-        'doctorLocation': location
-      }, {
-        'id': id
-      }).then((value) => {
-            print(
-                'Here is POST DOCTOR CALL RESPONSE: ${value.statusCode} ${value.body}')
-          });
+      final resp = await apiClient.post(CovidCareEndpoints.markAsComplete,
+          {'doctor': name, 'doctorLocation': location}, {'id': id});
+      if (resp.statusCode != 200) {
+        return Future.error(
+            'Invalid status code updating DocInfo: ${resp.statusCode}');
+      }
+      return Future.value();
     } catch (error) {
       print("Error updating Doctor Information on Call : $error");
+      return Future.error('Error updating Doctor Information pre call: $error');
     }
   }
 

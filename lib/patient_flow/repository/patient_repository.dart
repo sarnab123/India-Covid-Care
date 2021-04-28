@@ -9,8 +9,12 @@ import 'package:india_covid_care/patient_flow/symptoms/model/symptom_information
 class PatientRepository {
   final BaseAPIManager apiClient = BaseAPIManager();
 
-  Future<void> saveDetails(PatientEditing info, SymptomInformation sympInfo,
-      ConditionInformation condInfo) async {
+  Future<void> saveDetails(
+      PatientEditing info,
+      SymptomInformation sympInfo,
+      ConditionInformation condInfo,
+      DateTime? firstShot,
+      DateTime? secondShot) async {
     final Map<String, dynamic> patientDetails = PatientDetails(
             name: info.name.value,
             location: info.location.value,
@@ -21,6 +25,19 @@ class PatientRepository {
             language: info.language.value,
             existingCondition: _createExistingConditionList(condInfo))
         .toJson();
+    if (info.vaccinated) {
+      patientDetails['vaccineTaken'] = true;
+      if (firstShot != null) {
+        patientDetails['vaccine1Date'] =
+            '${firstShot.day}-${firstShot.month}-${firstShot.year}';
+      }
+      if (secondShot != null) {
+        patientDetails['vaccine2Date'] =
+            '${secondShot.day}-${secondShot.month}-${secondShot.year}';
+      }
+    } else {
+      patientDetails['vaccineTaken'] = false;
+    }
     log('HERE IS THE DTO: $patientDetails');
     final resp = await apiClient.post(
         CovidCareEndpoints.savePatient, patientDetails, null);

@@ -54,11 +54,12 @@ class DoctorInformationDialog extends StatelessWidget {
                             ElevatedButton(
                                 onPressed: () {
                                   // Send the POST api call to let us know which doctor
+                                  BlocProvider.of<DoctorBloc>(context).add(
+                                      DoctorInitiatedCall(
+                                          id: id, number: phoneNumber));
                                   BlocProvider.of<DoctorBloc>(context)
-                                      .add(DoctorInitiatedCall(id: id));
-                                  // Don't await for it - send the doctor straight to whatsapp
-                                  launch(
-                                      "whatsapp://send?phone=+91$phoneNumber");
+                                      .add(FetchPatients());
+                                  Navigator.pop(context, false);
                                 },
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.green,
@@ -78,31 +79,6 @@ class DoctorInformationDialog extends StatelessWidget {
                         return Container();
                       }
                     })
-                    // Row(
-                    //   children: [
-                    //     Spacer(),
-                    //     ElevatedButton(
-                    //         onPressed: () {
-                    //           // Send the POST api call to let us know which doctor
-                    //           BlocProvider.of<DoctorBloc>(context)
-                    //               .add(DoctorInitiatedCall(id: id));
-                    //           // Don't await for it - send the doctor straight to whatsapp
-                    //           launch("whatsapp://send?phone=+91$phoneNumber");
-                    //         },
-                    //         style: ElevatedButton.styleFrom(
-                    //             primary: Colors.green,
-                    //             padding: EdgeInsets.all(12)),
-                    //         child: Row(
-                    //           children: [
-                    //             Text('Call'),
-                    //             SizedBox(
-                    //               width: 8,
-                    //             ),
-                    //             Icon(Icons.phone)
-                    //           ],
-                    //         ))
-                    //   ],
-                    // )
                   ],
                 ))));
   }

@@ -24,6 +24,9 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
   final ConditionInformation _conditionInformation = ConditionInformation();
   final PatientRepository repo = PatientRepository();
 
+  DateTime? firstShot;
+  DateTime? secondShot;
+
   @override
   Stream<PatientState> mapEventToState(
     PatientEvent event,
@@ -40,14 +43,22 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
       yield* _mapPatientInfoUpdateToState(event, state as PatientEditing);
     } else if (event is PatientInformationSubmitted) {
       yield* _mapSubmittedToState(event, state as PatientEditing);
+    } else if (event is VaccineToggled) {
+      yield (state as PatientEditing).copyWith(newVaccine: event.value);
+    } else if (event is VaccineDateSelected) {
+      if (event.isFirstShot) {
+        firstShot = event.newDate;
+      } else {
+        secondShot = event.newDate;
+      }
     }
   }
 
   Stream<PatientState> _mapSubmittedToState(
       PatientInformationSubmitted event, PatientEditing state) async* {
     try {
-      final resp = await repo.saveDetails(
-          state, _symptomInformation, _conditionInformation);
+      final resp = await repo.saveDetails(state, _symptomInformation,
+          _conditionInformation, firstShot, secondShot);
       yield state.copyWith(apiSuccess: true);
     } catch (error) {
       yield state.copyWith(apiError: true);
