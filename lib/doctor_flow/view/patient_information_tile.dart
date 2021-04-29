@@ -72,56 +72,55 @@ class _PatientInformationTileState extends State<PatientInformationTile> {
                     )
                 ],
               )),
-          if (_isVaccinated())
-            Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      // queue BLoC event
-                      if (widget.patient.id != null) {
-                        BlocProvider.of<DoctorBloc>(context).add(
-                            MarkPatientAsCompleted(id: widget.patient.id!));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.green, padding: EdgeInsets.all(12)),
-                    child: Row(
-                      children: [
-                        Text('Mark as completed'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Icon(Icons.check)
-                      ],
-                    )),
-                Spacer(),
-                ElevatedButton(
-                    onPressed: () {
-                      // Present the Dialog here
-                      showDialog(
-                          context: context,
-                          builder: (ctx) => BlocProvider.value(
-                              value: BlocProvider.of<DoctorBloc>(context),
-                              child: DoctorInformationDialog(
-                                phoneNumber: widget.patient.number ?? "",
-                                id: widget.patient.id ?? "",
-                              )));
-                      // create phone call here
-                      // launch("whatsapp://send?phone=+91${widget.patient.number}");
-                    },
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.green, padding: EdgeInsets.all(12)),
-                    child: Row(
-                      children: [
-                        Text('Call'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Icon(Icons.phone)
-                      ],
-                    ))
-              ],
-            ),
+          Row(
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    // queue BLoC event
+                    if (widget.patient.id != null) {
+                      BlocProvider.of<DoctorBloc>(context)
+                          .add(MarkPatientAsCompleted(id: widget.patient.id!));
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.green, padding: EdgeInsets.all(12)),
+                  child: Row(
+                    children: [
+                      Text('Mark as completed'),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.check)
+                    ],
+                  )),
+              Spacer(),
+              ElevatedButton(
+                  onPressed: () {
+                    // Present the Dialog here
+                    showDialog(
+                        context: context,
+                        builder: (ctx) => BlocProvider.value(
+                            value: BlocProvider.of<DoctorBloc>(context),
+                            child: DoctorInformationDialog(
+                              phoneNumber: widget.patient.number ?? "",
+                              id: widget.patient.id ?? "",
+                            )));
+                    // create phone call here
+                    // launch("whatsapp://send?phone=+91${widget.patient.number}");
+                  },
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.green, padding: EdgeInsets.all(12)),
+                  child: Row(
+                    children: [
+                      Text('Call'),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.phone)
+                    ],
+                  ))
+            ],
+          ),
         ],
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
       )
