@@ -14,14 +14,20 @@ class DoctorLoading extends DoctorState {}
 class PatientsLoaded extends DoctorState {
   final List<PatientDetails> patients;
   bool isValidDoctorInput;
+  bool cannotOpenWhatsapp;
 
-  PatientsLoaded({required this.patients, this.isValidDoctorInput = false});
+  PatientsLoaded(
+      {required this.patients,
+      this.isValidDoctorInput = false,
+      this.cannotOpenWhatsapp = false});
 
-  PatientsLoaded copyWith({required bool validInput}) {
+  PatientsLoaded copyWith({required bool validInput, bool? connectWhatsapp}) {
     return PatientsLoaded(
-        patients: this.patients, isValidDoctorInput: validInput);
+        patients: this.patients,
+        isValidDoctorInput: validInput,
+        cannotOpenWhatsapp: connectWhatsapp ?? false);
   }
 
   @override
-  List<Object> get props => [isValidDoctorInput];
+  List<Object> get props => [isValidDoctorInput, cannotOpenWhatsapp, patients];
 }

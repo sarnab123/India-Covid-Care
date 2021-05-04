@@ -27,3 +27,5 @@ class DoctorInitiatedCall extends DoctorEvent {
 
   DoctorInitiatedCall({required this.id, required this.number});
 }
+
+class DoctorHasNoWhatsapp extends DoctorEvent {}
