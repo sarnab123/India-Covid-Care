@@ -14,7 +14,62 @@ class DoctorPage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-        child: BlocBuilder<DoctorBloc, DoctorState>(builder: (ctx, state) {
+        child: BlocConsumer<DoctorBloc, DoctorState>(listener: (ctx, state) {
+          if (state is PatientsLoaded && state.cannotOpenWhatsapp) {
+            // show dialog here that cannot open whats app
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (ctx) => BlocProvider.value(
+                    value: BlocProvider.of<DoctorBloc>(context),
+                    child: Dialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            // color: Colors.white,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Unable to open the WhatsApp Application. Please ensure it is installed and try again',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 32,
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        BlocProvider.of<DoctorBloc>(context)
+                                            .add(DoctorHasNoWhatsapp());
+                                        Navigator.pop(context, false);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10))),
+                                      child: Text(
+                                        'I understand',
+                                        style: TextStyle(color: Colors.white),
+                                      ))
+                                ],
+                              ),
+                            )))));
+          }
+        }, builder: (ctx, state) {
           if (state is DoctorInitial) {
             BlocProvider.of<DoctorBloc>(context).add(FetchPatients());
             return Container();

@@ -35,12 +35,21 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
           validInput: info.location.length >= 2 && info.name.length > 3);
     } else if (event is DoctorInitiatedCall) {
       try {
-        await repo.postDoctorCall(
-            info.name, info.location, event.id, event.number);
-        launch("whatsapp://send?phone=+91${event.number}");
+        final String url = "whatsapp://send?phone=+91${event.number}";
+        if (await canLaunch(url)) {
+          await repo.postDoctorCall(
+              info.name, info.location, event.id, event.number);
+          await launch(url);
+        } else {
+          yield (state as PatientsLoaded)
+              .copyWith(validInput: false, connectWhatsapp: true);
+        }
       } catch (error) {
         print('Error with Doctor Initiated Call: $error');
       }
+    } else if (event is DoctorHasNoWhatsapp) {
+      yield (state as PatientsLoaded)
+          .copyWith(validInput: false, connectWhatsapp: false);
     }
   }
 
