@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:india_covid_care/doctor_flow/model/doctor_information.dart';
 import 'package:india_covid_care/doctor_flow/repository/doctor_repository.dart';
 import 'package:india_covid_care/network/patient_details.dart';
@@ -35,12 +36,20 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
           validInput: info.location.length >= 2 && info.name.length > 3);
     } else if (event is DoctorInitiatedCall) {
       try {
-        final String url = "whatsapp://send?phone=+91${event.number}";
+        String url;
+        if (kIsWeb) {
+          url = "https://api.whatsapp.com/send/?phone=91${event.number}";
+        } else {
+          url = "whatsapp://send?phone=+91${event.number}";
+        }
+        print('HERE IS URL: $url');
+        // final String url = "whatsapp://send?phone=+91${event.number}";
         if (await canLaunch(url)) {
           await repo.postDoctorCall(
               info.name, info.location, event.id, event.number);
           await launch(url);
         } else {
+          print("CANNOT OPEN WHATSAPP");
           yield (state as PatientsLoaded)
               .copyWith(validInput: false, connectWhatsapp: true);
         }
