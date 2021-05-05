@@ -43,7 +43,7 @@ class BaseAPIManager {
     try {
       final Uri uri = Uri.https(host, ep.string);
       final response = await http.get(uri);
-      print('GET RESPONSE: ${response.statusCode}  ${response.body}');
+      // print('GET RESPONSE: ${response.statusCode}  ${response.body}');
       if (response.statusCode != 200) {
         return Future.error('HTTP GET REQUST ERROR: $response');
       }
