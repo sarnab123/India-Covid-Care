@@ -47,7 +47,7 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
         if (await canLaunch(url)) {
           await repo.postDoctorCall(
               info.name, info.location, event.id, event.number);
-          await launch(url);
+          await launch(url, forceSafariVC: kIsWeb, forceWebView: kIsWeb);
         } else {
           print("CANNOT OPEN WHATSAPP");
           yield (state as PatientsLoaded)
